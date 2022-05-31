@@ -1,0 +1,45 @@
+version: "3.7"
+services:
+  app:
+    build:
+      args:
+        user: me
+        uid: 1000
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: online-shop
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ..:/var/www
+    networks:
+      - online-shop
+  db:
+    image: mariadb
+    container_name: shop-db
+    restart: unless-stopped
+    environment:
+      - MYSQL_DATABASE=online-shop
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_PASSWORD=secret
+      - MYSQL_USER=me
+    ports:
+      - 3306:3306
+    volumes:
+      - ../docker/mysql:/docker-entrypoint-initdb.d
+    networks:
+      - online-shop
+  nginx:
+    image: nginx:1.17-alpine
+    container_name: shop-nginx
+    restart: unless-stopped
+    ports:
+      - 8000:80
+    volumes:
+      - ..:/var/www
+      - ../docker/nginx:/etc/nginx/conf.d
+    networks:
+      - online-shop
+networks:
+  online-shop:
+    driver: bridge
