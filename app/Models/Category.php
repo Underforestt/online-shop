@@ -14,16 +14,6 @@ class Category extends Model
 
     public function products()
     {
-        return $this->hasMany(Product::class);
+        return $this->belongsToMany(Product::class);
     }
-
-    public function delete()
-    {
-        foreach ($this->products as $product) {
-            $product->uncategorize();
-            $product->save();
-        }
-        parent::delete();
-    }
-
 }

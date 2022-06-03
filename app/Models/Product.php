@@ -18,15 +18,9 @@ class Product extends Model
     ];
 
     public $timestamps = true;
-    public const UNCATEGORIZED_ID = 5;
 
     public function category()
     {
-        return $this->belongsTo(Category::class);
-    }
-
-    public function uncategorize()
-    {
-        $this->category_id = self::UNCATEGORIZED_ID;
+        return $this->belongsToMany(Category::class);
     }
 }

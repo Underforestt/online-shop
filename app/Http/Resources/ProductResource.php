@@ -18,9 +18,14 @@ class ProductResource extends JsonResource
             'id' => $this->id,
             'name'=> $this->name,
             'description' => $this->description,
-            'category' => CategoryResource::make($this->category),
+            'category' => $this->category()->exists()
+                ? CategoryResource::make($this->category)
+                : ['name' => 'uncategorized'],
             'amount' => $this->amount,
             'price' => $this->price,
+            'order_amount' => $this->whenPivotLoaded('order_product', function () {
+                return $this->pivot->quantity;
+            }),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];
